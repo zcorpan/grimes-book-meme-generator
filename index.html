@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Grimes Book Meme Generator</title>
+<link rel="canonical" href="https://zcorpan.github.io/grimes-book-meme-generator/">
+<meta name="description" content="Replace the book cover in the picture where Grimes reads The Communist Manifesto - Karl Marx.">
+<meta name="twitter:title" content="Grimes Book Meme Generator">
+<meta name="twitter:url" content="https://zcorpan.github.io/grimes-book-meme-generator/">
+<meta name="twitter:description" content="Replace the book cover in the picture where Grimes reads The Communist Manifesto - Karl Marx."/>
+<meta name="twitter:image" content="https://zcorpan.github.io/grimes-book-meme-generator/img/grimes-03.png">
+<meta name="twitter:card" content="summary_large_image"/>
+<style>
+html { font-family: system-ui, sans-serif; background: white; color: black; }
+canvas { max-width: 100%; }
+footer { margin: 1em; padding: 0 1em; border: 1px solid gray; background: #eee; border-radius: 5px; }
+@media (prefers-color-scheme: dark) {
+  html { background: #333; color: #eee; }
+  footer { background: #222; }
+  :link { color: #46abea; }
+  :visited { color: #ae95e2; }
+}
+</style>
+<h1>Grimes Book Meme Generator</h1>
+<canvas id=canvas width=1200 height=675></canvas>
+<p><button id=downloadButton>Download</button><a href=data:, download=grimes-book-meme-0.jpg id=downloadLink hidden></a> By downloading from or linking to this website, you agree to the Website Terms and Conditions of Use below.</p>
+<form id=form>
+ <input type=search name=q required>
+ <button>Search Book Cover</button>
+</form>
+<ul id=results></ul>
+<script>
+(async function() {
+  let context = canvas.getContext('2d');
+  let grimesImg = new Image();
+  grimesImg.src = 'img/grimes-03.png';
+  let grimesLoaded = new Promise(resolve => grimesImg.onload = resolve);
+  async function drawBookCover(eventOrCoverId) {
+    let event = null;
+    let coverId = '';
+    if (typeof eventOrCoverId === 'string') {
+      coverId = eventOrCoverId;
+    } else {
+      event = eventOrCoverId;
+      event.preventDefault();
+      coverId = event.target.dataset.coverId;
+      history.replaceState(null, '', `#${coverId}`);
+    }
+    let img = new Image();
+    img.crossOrigin = 'anonymous';
+    if (coverId && /^\d+$/.test(coverId)) {
+      img.src = `https://covers.openlibrary.org/b/id/${coverId}-M.jpg`;
+      await new Promise((resolve, reject) => { img.onload = resolve; img.onerror = reject; });
+    }
+    await grimesLoaded;
+    canvas.width = canvas.width;
+    context.setTransform(1, -0.7, 0.85, 1, 260, 345);
+    context.drawImage(img, 0, 0, 110, 175);
+    context.setTransform(1, 0, 0, 1, 0, 0);
+    context.drawImage(grimesImg, 0, 0);
+    downloadLink.download = downloadLink.download.replace(/\d+/, coverId || '0');
+  }
+  form.onsubmit = async e => {
+    e.preventDefault();
+    let params = new URLSearchParams({q: form.elements.q.value});
+    history.replaceState(null, '', `?${params}${location.hash}`)
+    let response = await fetch(`https://openlibrary.org/search.json?${params}`);
+    let json = await response.json();
+    let matches = json.docs;
+    let matchesCoverIds = [];
+    results.innerHTML = '';
+    for (let match of matches) {
+      if (!match.cover_i || matchesCoverIds.includes(match.cover_i)) {
+        continue;
+      }
+      let link = document.createElement('a');
+      link.textContent = `${match.title} - ${match.author_name}`;
+      link.href = `#${match.cover_i}`;
+      link.dataset.coverId = match.cover_i;
+      matchesCoverIds.push(match.cover_i);
+      link.onclick = drawBookCover;
+      let li = document.createElement('li');
+      results.append(li);
+      li.append(link);
+    }
+  };
+  if (location.search) {
+    let params = new URLSearchParams(location.search);
+    let q = params.get('q');
+    if (q) {
+      form.elements.q.value = q;
+      form.requestSubmit();
+    }
+  }
+  drawBookCover(location.hash.substr(1));
+
+  downloadButton.onclick = e => {
+    downloadLink.href = canvas.toDataURL('image/jpg');
+    downloadLink.click();
+  }
+})();
+</script>
+
+<footer>
+
+<h2>Credits</h2>
+
+<p>Image from <a href="https://nypost.com/2021/10/02/grimes-reads-karl-marx-after-split-with-worlds-richest-man-elon-musk/">nypost.com</a> (modified: cropped and made the book cover transparent). Book search and cover images via <a href="https://openlibrary.org/">openlibrary.org</a> (<a href="https://openlibrary.org/dev/docs/api/search">Search API docs</a>, <a href="https://openlibrary.org/dev/docs/api/covers">Open Library Covers API docs</a>). Rate limiting applies.</p>
+
+<h2>Website Terms and Conditions of Use</h2>
+
+<h3>1. Terms</h3>
+
+<p>By accessing this Website, accessible from https://zcorpan.github.io/grimes-book-meme-generator/, you are agreeing to be bound by these Website Terms and Conditions of Use and agree that you are responsible for the agreement with any applicable local laws. If you disagree with any of these terms, you are prohibited from accessing this site. The materials contained in this Website are protected by copyright and trade mark law.</p>
+
+<h3>2. Use License</h3>
+
+<p>Permission is granted to download the materials on Grimes Book Meme Generator's Website. This is the grant of a license, not a transfer of title, and under this license you may not:</p>
+
+<ul>
+    <li>remove any copyright or other proprietary notations from the materials;</li>
+</ul>
+
+<p>This will let Grimes Book Meme Generator to terminate upon violations of any of these restrictions. Upon termination, your viewing right will also be terminated and you should destroy any downloaded materials in your possession whether it is printed or electronic format. These Terms of Service has been created with the help of the <a href="https://www.termsofservicegenerator.net">Terms Of Service Generator</a>.</p>
+
+<h3>3. Disclaimer</h3>
+
+<p>All the materials on Grimes Book Meme Generator’s Website are provided "as is". Grimes Book Meme Generator makes no warranties, may it be expressed or implied, therefore negates all other warranties. Furthermore, Grimes Book Meme Generator does not make any representations concerning the accuracy or reliability of the use of the materials on its Website or otherwise relating to such materials or any sites linked to this Website.</p>
+
+<h3>4. Limitations</h3>
+
+<p>Grimes Book Meme Generator or its suppliers will not be hold accountable for any damages that will arise with the use or inability to use the materials on Grimes Book Meme Generator’s Website, even if Grimes Book Meme Generator or an authorize representative of this Website has been notified, orally or written, of the possibility of such damage. Some jurisdiction does not allow limitations on implied warranties or limitations of liability for incidental damages, these limitations may not apply to you.</p>
+
+<h3>5. Revisions and Errata</h3>
+
+<p>The materials appearing on Grimes Book Meme Generator’s Website may include technical, typographical, or photographic errors. Grimes Book Meme Generator will not promise that any of the materials in this Website are accurate, complete, or current. Grimes Book Meme Generator may change the materials contained on its Website at any time without notice. Grimes Book Meme Generator does not make any commitment to update the materials.</p>
+
+<h3>6. Links</h3>
+
+<p>Grimes Book Meme Generator has not reviewed all of the sites linked to its Website and is not responsible for the contents of any such linked site. The presence of any link does not imply endorsement by Grimes Book Meme Generator of the site. The use of any linked website is at the user’s own risk.</p>
+
+<h3>7. Site Terms of Use Modifications</h3>
+
+<p>Grimes Book Meme Generator may revise these Terms of Use for its Website at any time without prior notice. By using this Website, you are agreeing to be bound by the current version of these Terms and Conditions of Use.</p>
+
+<h3>8. Your Privacy</h3>
+
+<p>Grimes Book Meme Generator does not currently use any cookies, tracking, or ads.</p>
+
+<h3>9. Governing Law</h3>
+
+<p>Any claim related to Grimes Book Meme Generator's Website shall be governed by the laws of Sweden without regards to its conflict of law provisions.</p>
+
+</footer>
