@@ -9,7 +9,7 @@
 <meta name="twitter:title" content="Grimes Book Meme Generator">
 <meta name="twitter:url" content="https://zcorpan.github.io/grimes-book-meme-generator/">
 <meta name="twitter:description" content="Replace the book cover in the picture where Grimes reads The Communist Manifesto - Karl Marx.">
-<meta name="twitter:image" content="https://zcorpan.github.io/grimes-book-meme-generator/img/grimes-03.png">
+<meta name="twitter:image" content="https://zcorpan.github.io/grimes-book-meme-generator/img/grimes-03-optimized.png">
 <meta name="twitter:image:alt" content="Grimes reading (blank)">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preload" as="image" href="img/grimes-03.jxl" type="image/jxl">
@@ -40,7 +40,7 @@ footer { margin: 1em; padding: 0 1em; border: 1px solid gray; background: #eee; 
 (async function() {
   let context = canvas.getContext('2d');
   let grimesPicture = document.createElement('picture');
-  grimesPicture.innerHTML = '<source srcset="img/grimes-03.jxl" type="image/jxl"><img src="img/grimes-03.png" alt="">';
+  grimesPicture.innerHTML = '<source srcset="img/grimes-03.jxl" type="image/jxl"><img src="img/grimes-03-optimized.png" alt="">';
   grimesImg = grimesPicture.firstChild.nextSibling;
   let grimesLoaded = new Promise(resolve => grimesImg.onload = resolve);
   async function drawBookCover(eventOrCoverId) {
