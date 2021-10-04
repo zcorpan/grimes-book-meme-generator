@@ -12,7 +12,7 @@
 <meta name="twitter:image" content="https://zcorpan.github.io/grimes-book-meme-generator/img/grimes-03.png">
 <meta name="twitter:image:alt" content="Grimes reading (blank)">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="preload" as="image" href="img/grimes-03.png">
+<link rel="preload" as="image" href="img/grimes-03.jxl" type="image/jxl">
 <link rel="icon" href="data:image/svg+xml,<svg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20100%20100%22><text%20y=%22.9em%22%20font-size=%2290%22>📕</text></svg>">
 <style>
 html { font-family: system-ui, sans-serif; background: white; color: black; }
@@ -39,8 +39,9 @@ footer { margin: 1em; padding: 0 1em; border: 1px solid gray; background: #eee; 
 <script>
 (async function() {
   let context = canvas.getContext('2d');
-  let grimesImg = new Image();
-  grimesImg.src = 'img/grimes-03.png';
+  let grimesPicture = document.createElement('picture');
+  grimesPicture.innerHTML = '<source srcset="img/grimes-03.jxl" type="image/jxl"><img src="img/grimes-03.png" alt="">';
+  grimesImg = grimesPicture.firstChild.nextSibling;
   let grimesLoaded = new Promise(resolve => grimesImg.onload = resolve);
   async function drawBookCover(eventOrCoverId) {
     let event = null;
