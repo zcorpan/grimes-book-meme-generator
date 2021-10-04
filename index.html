@@ -64,6 +64,11 @@ footer { margin: 1em; padding: 0 1em; border: 1px solid gray; background: #eee; 
     bookTitle = '(blank)';
     if (event) {
       bookTitle = event.target.textContent;
+    } else {
+      let link = document.querySelector(`[data-cover-id="${CSS.escape(coverId)}"]`);
+      if (link) {
+        bookTitle = link.textContent;
+      }
     }
     altBookTitle.textContent = bookTitle;
   }
@@ -76,6 +81,7 @@ footer { margin: 1em; padding: 0 1em; border: 1px solid gray; background: #eee; 
     let matches = json.docs;
     let matchesCoverIds = [];
     results.innerHTML = '';
+    let altIsBlank = altBookTitle.textContent === '(blank)';
     for (let match of matches) {
       if (!match.cover_i || matchesCoverIds.includes(match.cover_i)) {
         continue;
@@ -89,6 +95,9 @@ footer { margin: 1em; padding: 0 1em; border: 1px solid gray; background: #eee; 
       let li = document.createElement('li');
       results.append(li);
       li.append(link);
+      if (altIsBlank && location.hash.substr(1) === String(match.cover_i)) {
+        altBookTitle.textContent = link.textContent;
+      }
     }
   };
   if (location.search) {
