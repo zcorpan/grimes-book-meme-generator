@@ -24,13 +24,15 @@ footer { margin: 1em; padding: 0 1em; border: 1px solid gray; background: #eee; 
 }
 </style>
 <h1>Grimes Book Meme Generator</h1>
-<canvas id=canvas width=1200 height=675></canvas>
+<canvas id=canvas width=1200 height=675 aria-label="Generated image of Grimes reading the selected book."></canvas>
 <p><button id=downloadButton>Download</button><a href=data:, download=grimes-book-meme-0.jpg id=downloadLink hidden></a> By downloading from or linking to this website, you agree to the Website Terms and Conditions of Use below.</p>
-<p><strong><a href="https://help.twitter.com/en/using-twitter/picture-descriptions">Alt text</a>:</strong> <span id=alt>Grimes reading <span id=altBookTitle>(blank)</span></span></p>
+<p><strong><a href="https://help.twitter.com/en/using-twitter/picture-descriptions">Alt text</a>:</strong> <output id=alt>Grimes reading <span id=altBookTitle>(blank)</span></output></p>
 <form id=form>
  <input type=search name=q required>
  <button>Search Book Cover</button>
+ <output id=searchStatus></output>
 </form>
+
 <ul id=results></ul>
 <script>
 (async function() {
@@ -76,7 +78,8 @@ footer { margin: 1em; padding: 0 1em; border: 1px solid gray; background: #eee; 
   form.onsubmit = async e => {
     e.preventDefault();
     let params = new URLSearchParams({q: form.elements.q.value});
-    history.replaceState(null, '', `?${params}${location.hash}`)
+    history.replaceState(null, '', `?${params}${location.hash}`);
+    searchStatus.textContent = 'Searching...';
     let response = await fetch(`https://openlibrary.org/search.json?${params}`);
     let json = await response.json();
     let matches = json.docs;
@@ -100,6 +103,7 @@ footer { margin: 1em; padding: 0 1em; border: 1px solid gray; background: #eee; 
         altBookTitle.textContent = link.textContent;
       }
     }
+    searchStatus.textContent = `${matchesCoverIds.length} books found.`;
   };
   if (location.search) {
     let params = new URLSearchParams(location.search);
